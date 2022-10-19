@@ -12,14 +12,20 @@ namespace WebAPImongoClient.Controllers
     public class ClientController : ControllerBase
     {
         private readonly ClientService _clientService;
-        public ClientController(ClientService clientService)
+        private readonly AddressService _addressService;
+
+        public ClientController(ClientService clientService,AddressService addressService)
         {
             _clientService = clientService;
+            _addressService = addressService;
         }
         [HttpPost]
-        public ActionResult<Client> Create(Client client)
+        public ActionResult<Client> Post(Client client)
         {
-            _clientService.Create(client);
+            Address address = _addressService.Create(client.Address);
+            client.Address = address;   //insiro o endereço primeiro e já trago de volta
+
+            _clientService.Create(client);//insiro o cliente com o endereço
             return CreatedAtRoute("GetClient",new {id=client.Id.ToString()},client);
         }
         [HttpGet]
@@ -33,7 +39,7 @@ namespace WebAPImongoClient.Controllers
             return Ok(client);
         }
         [HttpPut]
-        public ActionResult<Client> Update(string id, Client clientIn)
+        public ActionResult<Client> Put(string id, Client clientIn)
         {
             var client = _clientService.Get(id);
             if (client == null) return NotFound();

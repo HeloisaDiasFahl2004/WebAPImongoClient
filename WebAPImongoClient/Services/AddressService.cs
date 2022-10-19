@@ -23,7 +23,7 @@ namespace WebAPImongoClient.Services
         }
         public List<Address> Get() => _address.Find(x => true).ToList();
         public Address Get(string id) => _address.Find(adress => adress.Id == id).FirstOrDefault();
-        public void Update(string id, Address adressIn) => _address.ReplaceOne(address => adressIn.Id == id, adressIn);
-        public void Remove(Address adressIn) => _address.DeleteOne(adress => adress.Id == adressIn.Id);
+        public void Update(string id, Address addressIn) => _address.ReplaceOne(address => address.Id == id, addressIn);
+        public void Remove(Address addressIn) => _address.DeleteOne(address => address.Id == addressIn.Id);
     }
 }
