@@ -6,11 +6,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPImongoClient.Services;
+using WebAPImongoClient.Utils;
 
 namespace WebAPImongoClient
 {
@@ -32,6 +35,12 @@ namespace WebAPImongoClient
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPImongoClient", Version = "v1" });
             });
+            //Configuro as services
+            services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
+            services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+
+            services.AddSingleton<ClientService>();
+            services.AddSingleton<AddressService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
