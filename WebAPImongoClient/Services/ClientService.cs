@@ -22,11 +22,7 @@ namespace WebAPImongoClient.Services
         }
         public List<Client> Get() => _clients.Find<Client>(client => true).ToList();
         public Client Get(string id) => _clients.Find<Client>(client =>client.Id==id).FirstOrDefault();
-        public void Update(string id,Client clientIn)
-        {
-            _clients.ReplaceOne(client=> client.Id==id,clientIn);
-            Get(clientIn.Id);
-        }
+        public void Update(string id,Client clientIn) => _clients.ReplaceOne(client => client.Id == id, clientIn);
         public void Remove(Client clientIn) => _clients.DeleteOne(client => client.Id == clientIn.Id);
         
     }
