@@ -53,6 +53,9 @@ namespace WebAPImongoClient.Controllers
         {
             var client = _clientService.Get(id);
             if (client == null) return NotFound("Não encontrado");
+            clientIn.Id = id;
+            //Address address = _addressService.Create(client.Address);//pega o objeto address
+            //client.Address = address;//insere o address e já traz de volta
             _clientService.Update(client.Id, clientIn);
             return NoContent();
         }
