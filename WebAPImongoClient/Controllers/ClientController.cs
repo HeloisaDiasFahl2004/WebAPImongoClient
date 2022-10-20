@@ -30,15 +30,22 @@ namespace WebAPImongoClient.Controllers
 
             return Ok(client);
         }
-        //[HttpGet("{name}")]
-        //public ActionResult<Client> GetName(string name)
-        //{
-        //    var client = _clientService.Get(name);
-        //    if (client == null) return NotFound();
-        //    var c = client.Where(x => x.Name == name).FirstOrDefault();
-        //    return Ok(c);
-        //}
+        [HttpGet("{name}",Name ="GetName")]
+        public ActionResult<Client> GetName(string name)
+        {
+            var client = _clientService.GetName(name);
+            if (client == null) return NotFound();//404
+          
+            return Ok(client);
+        }
+        [HttpGet("address/{idaddress:length(24)}",Name ="GetClientAddress")]
+        public ActionResult<Client> GetAddress(string idaddress)
+        {
+            var client = _clientService.GetAddress(idaddress);
+            if (client == null) return NotFound();
 
+            return Ok(client);
+        }
         [HttpPost]
         public ActionResult<Client> Post(Client client)
         {

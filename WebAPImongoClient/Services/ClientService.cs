@@ -12,18 +12,20 @@ namespace WebAPImongoClient.Services
         public ClientService(IDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
-            var database =client.GetDatabase(settings.DatabaseName);
+            var database = client.GetDatabase(settings.DatabaseName);
             _clients = database.GetCollection<Client>(settings.ClientCollectionName);
         }
         public Client Create(Client client)
         {
             _clients.InsertOne(client);
-            return client ;
+            return client;
         }
         public List<Client> Get() => _clients.Find<Client>(client => true).ToList();
-        public Client Get(string id) => _clients.Find<Client>(client =>client.Id==id).FirstOrDefault();
-        public void Update(string id,Client clientIn) => _clients.ReplaceOne(client => client.Id == id, clientIn);
+        public Client Get(string id) => _clients.Find<Client>(client => client.Id == id).FirstOrDefault();
+        public Client GetName(string name) => _clients.Find<Client>(client => client.Name == name).FirstOrDefault();
+        public Client GetAddress(string idaddress) => _clients.Find<Client>(client => client.Address.Id == idaddress).FirstOrDefault();
+        public void Update(string id, Client clientIn) => _clients.ReplaceOne(client => client.Id == id, clientIn);
         public void Remove(Client clientIn) => _clients.DeleteOne(client => client.Id == clientIn.Id);
-        
+
     }
 }
