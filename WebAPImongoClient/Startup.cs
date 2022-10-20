@@ -33,9 +33,8 @@ namespace WebAPImongoClient
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPImongoClient", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIMongo", Version = "v1" });
             });
-            //Configuro as services
             services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
             services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
@@ -50,7 +49,7 @@ namespace WebAPImongoClient
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPImongoClient v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIAgendaMongo v1"));
             }
 
             app.UseHttpsRedirection();

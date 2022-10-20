@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using WebAPImongoClient.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver.Core.Operations;
-using System.Collections.Generic;
 using WebAPImongoClient.Models;
-using WebAPImongoClient.Services;
+using System.Collections.Generic;
 
 namespace WebAPImongoClient.Controllers
 {
@@ -13,49 +12,58 @@ namespace WebAPImongoClient.Controllers
     {
         private readonly ClientService _clientService;
         private readonly AddressService _addressService;
+
         public ClientController(ClientService clientService, AddressService addressService)
         {
             _clientService = clientService;
             _addressService = addressService;
         }
-        [HttpPost]
-        public ActionResult<Client> Create(Client client)
-        {
-            Address adress = _addressService.Create(client.Address);//pega o objeto address
-            client.Address = adress;//insere o address e já traz de volta
 
-            _clientService.Create(client);
-            return CreatedAtRoute("GetClient",new {id=client.Id.ToString()},client);
-        }
         [HttpGet]
         public ActionResult<List<Client>> Get() => _clientService.Get();
-        [HttpGet("{id:length(24)}", Name = "GetClient")]
+
+        [HttpGet("{Id:length(24)}", Name = "GetClient")]
         public ActionResult<Client> Get(string id)
         {
             var client = _clientService.Get(id);
-            if (client == null) 
-                return NotFound(); //404
+            if (client == null) return NotFound();
 
             return Ok(client);
         }
+        //[HttpGet("{name}")]
+        //public ActionResult<Client> GetName(string name)
+        //{
+        //    var client = _clientService.Get(name);
+        //    if (client == null) return NotFound();
+        //    var c = client.Where(x => x.Name == name).FirstOrDefault();
+        //    return Ok(c);
+        //}
+
+        [HttpPost]
+        public ActionResult<Client> Post(Client client)
+        {
+            Address address = _addressService.Create(client.Address);//pega o objeto address
+            client.Address = address;//insere o address e já traz de volta
+            _clientService.Create(client);
+            return CreatedAtRoute("GetClient", new { id = client.Id.ToString() }, client);
+        }
+
         [HttpPut]
-        public ActionResult<Client> Update(string id, Client clientIn)
+        public ActionResult<Client> Put(Client clientIn, string id)
         {
             var client = _clientService.Get(id);
-            if (client == null) return NotFound();
-            clientIn.Id = id;
-            _clientService.Update(id, clientIn);
-            return NoContent();//retorna só uma mensagem,não o objeto
-        }
-        [HttpDelete]
-        public ActionResult Delete(string id)
-        {
-            Client client = _clientService.Get(id);
-            if (client == null) 
-                return NotFound();
-            _clientService.Remove(client);
+            if (client == null) return NotFound("Não encontrado");
+            _clientService.Update(client.Id, clientIn);
             return NoContent();
         }
 
+        [HttpDelete]
+        public ActionResult<Client> Delete(string id)
+        {
+            Client client = _clientService.Get(id);
+            if (client == null) return NotFound();
+            _clientService.Remove(client);
+            return NoContent();
+        }
     }
 }
